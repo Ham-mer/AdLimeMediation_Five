@@ -20,7 +20,6 @@
 @class FADSettings;
 @class FADInterstitial;
 @class FADInFeed;
-@class FADBounce;
 @class FADAdViewW320H180;
 
 typedef enum: NSInteger {
@@ -43,9 +42,9 @@ typedef enum: NSInteger {
   kFADFormatInterstitialLandscape = 1, // until ver.20180420
   kFADFormatInterstitialPortrait = 2,  // until ver.20180420
   kFADFormatInFeed = 3,
-  kFADFormatBounce = 4,
+  kFADFormatBounce = 4,                // until ver.20200625
   kFADFormatW320H180 = 5,
-  kFADFormatW300H250 = 6,
+  kFADFormatW300H250 = 6,              // not available
   kFADFormatCustomLayout = 7,
   kFADFormatVideoReward = 8            // use this for interstitial too since ver.20180601
 } FADFormat;
@@ -85,10 +84,17 @@ typedef NS_ENUM (NSInteger, FADNeedChildDirectedTreatment) {
   kFADNeedChildDirectedTreatmentTrue = 2
 };
 
+static NSString* const kFADConfigAppIdKey = @"FIVE_APP_ID";
+static NSString* const kFADConfigAdFormatKey = @"FIVE_AD_FORMATS";
+static NSString* const kFADConfigIsTestKey = @"FIVE_IS_TEST";
+
 /******************************************************************************
  * FADConfig
  ******************************************************************************/
 @interface FADConfig : NSObject
+
++ (FADConfig*) loadFromInfoDictionary;
+
 - (id)initWithAppId:(NSString *)appId;
 
 @property (nonatomic,readonly) NSString *appId;
@@ -176,19 +182,6 @@ __attribute__((deprecated("W320H180 ad format is deprecated. We might delete thi
 // Only available after ad is loaded.
 // This may returns empty string e.g. @""
 - (NSString *)getAdvertiserName;
-@end
-
-__attribute__((deprecated("Bounce ad format is deprecated. We might delete this API in future release. Use CustomLayout ad format and FADAdViewCustomLayout instead.")))
-@interface FADBounce: NSObject<FADAdInterface>
-- (instancetype)initWithSlotId:(NSString *)slotId scrollView:(UIScrollView *)scrollView;
-- (instancetype)initWithSlotId:(NSString *)slotId scrollView:(UIScrollView *)scrollView offsetY:(float)offsetY;
-- (instancetype)initWithSlotId:(NSString *)slotId scrollView:(UIScrollView *)scrollView offsetY:(float)offsetY contentsHeight:(float)contentsHeight;
-- (instancetype)init __attribute__((unavailable("init is not available")));
-
-// Default timeout interval is 10 seconds.
-// If a timeout occurs, it returns as a kFADErrorNetworkError.
-- (void)loadAdAsync;
-- (void)loadAdAsyncWithTimeoutInterval:(NSTimeInterval)timeout;
 @end
 
 __attribute__((deprecated("InFeed ad format is deprecated. We might delete this API in future release. Use CustomLayout ad format and FADAdViewCustomLayout instead.")))
